@@ -1,0 +1,17 @@
+using NightShift;
+using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
+var nm = NightManager.Instance;
+var tusk = nm.Robots.First(r => r.Data.displayName == "Tusk");
+tusk.Brain.Place(tusk.Brain.OpeningIndex);
+float u = Time.unscaledTime + 0.3f;
+await Wait.Until(() => Time.unscaledTime > u);
+var tiRoot = Resources.FindObjectsOfTypeAll<RectTransform>().First(r => r.name == "Threat Indicator");
+var m = tiRoot.Find("Marker Left");
+var img = m.Find("Arrow").GetComponent<Image>();
+var lbl = m.Find("Label").GetComponent<Text>();
+var br = tiRoot.Find("Bracket0").GetComponent<Image>();
+string s = $"state={nm.State} mAct={m.gameObject.activeInHierarchy} img.enabled={img.enabled} cull={img.canvasRenderer.cull} alpha={img.canvasRenderer.GetAlpha()} world={img.rectTransform.position} rect={img.rectTransform.rect} lossy={img.rectTransform.lossyScale} canvas={img.canvas} lbl='{lbl.text}' lblAlpha={lbl.canvasRenderer.GetAlpha()} | bracket world={br.rectTransform.position} enabled={br.enabled}";
+tusk.Brain.Place(0);
+return s;

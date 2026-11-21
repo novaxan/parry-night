@@ -1,0 +1,11 @@
+using NightShift;
+using UnityEngine;
+using System.Linq;
+using System.Reflection;
+var nm = NightManager.Instance;
+var gun = Object.FindFirstObjectByType<Shotgun>();
+var tusk = nm.Robots.First(r => r.Data.displayName == "Tusk");
+await Wait.Until(() => tusk.Brain.InParryWindow || tusk.Brain.State == RobotState.Attacked);
+if (tusk.Brain.State == RobotState.Attacked) return "MISSED window";
+typeof(Shotgun).GetMethod("Parry", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(gun, null);
+return $"after parry tusk={tusk.Brain.State} hp={tusk.Brain.Health}";

@@ -1,0 +1,16 @@
+using NightShift;
+using UnityEngine;
+var tab = CameraTablet.Instance;
+var cam = GameObject.Find("Feed Camera").GetComponent<Camera>();
+var rt = tab.Feed;
+cam.enabled = true;
+tab.Select(0, true);
+cam.Render();
+RenderTexture.active = rt;
+var tex = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
+tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+tex.Apply();
+RenderTexture.active = null;
+System.IO.File.WriteAllBytes("Screenshots/feed_debug.png", tex.EncodeToPNG());
+float sum = 0; foreach (var c in tex.GetPixels()) sum += c.grayscale;
+return $"camPos={cam.transform.position} target={cam.targetTexture?.name} avg={sum / (rt.width * rt.height):F4} fmt={rt.format}";

@@ -1,0 +1,12 @@
+using NightShift;
+using UnityEngine;
+using System.Linq;
+using System.Reflection;
+var nm = NightManager.Instance;
+nm.BeginNight();
+var view = Object.FindFirstObjectByType<OfficeView>();
+var tusk = nm.Robots.First(r => r.Data.displayName == "Tusk");
+tusk.Brain.Place(tusk.Brain.OpeningIndex);
+typeof(OfficeView).GetMethod("Turn", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(view, new object[] { -1 });
+await Wait.Until(() => view.Covered == Opening.Left);
+return $"state={nm.State} tusk={tusk.Brain.State} timer={tusk.Brain.StateTimer:F2} covered={view.Covered}";

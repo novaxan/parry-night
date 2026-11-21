@@ -1,0 +1,33 @@
+using NightShift;
+using UnityEngine;
+using System.Linq;
+var log = new System.Text.StringBuilder();
+var nm = NightManager.Instance;
+var tab = CameraTablet.Instance;
+var ribbon = nm.Robots.First(r => r.Data.displayName == "Ribbon");
+var wick = nm.Robots.First(r => r.Data.displayName == "Wick");
+ribbon.Brain.Place(2);   // East Hall
+tab.SetUp(true);
+tab.Select(4);
+float until = Time.unscaledTime + 1.2f;
+await Wait.Until(() => Time.unscaledTime > until);
+ScreenCapture.CaptureScreenshot("Screenshots/06_tablet_east_hall.png");
+tab.Select(0);
+until = Time.unscaledTime + 1.2f;
+await Wait.Until(() => Time.unscaledTime > until);
+ScreenCapture.CaptureScreenshot("Screenshots/07_tablet_stage.png");
+until = Time.unscaledTime + 0.3f;
+await Wait.Until(() => Time.unscaledTime > until);
+// Ribbon attacks the right door while the player watches cameras: no parry possible.
+ribbon.Brain.Place(ribbon.Brain.OpeningIndex);
+await Wait.Until(() => nm.State == GameState.Jumpscare);
+log.Append($"jumpscare by {ribbon.Data.displayName}; tabletUp={tab.IsUp}; ");
+until = Time.unscaledTime + 0.4f;
+await Wait.Until(() => Time.unscaledTime > until);
+ScreenCapture.CaptureScreenshot("Screenshots/08_jumpscare.png");
+await Wait.Until(() => nm.State == GameState.Lost);
+until = Time.unscaledTime + 0.5f;
+await Wait.Until(() => Time.unscaledTime > until);
+ScreenCapture.CaptureScreenshot("Screenshots/09_lost.png");
+log.Append($"state={nm.State} reason={nm.EndReason}");
+return log.ToString();

@@ -1,0 +1,12 @@
+using NightShift;
+using UnityEngine;
+using System.Linq;
+using System.Reflection;
+var nm = NightManager.Instance;
+var view = Object.FindFirstObjectByType<OfficeView>();
+foreach (var r in nm.Robots) r.Brain.Place(0);
+var ribbon = nm.Robots.First(r => r.Data.displayName == "Ribbon");
+ribbon.Brain.Place(ribbon.Brain.OpeningIndex);
+typeof(OfficeView).GetMethod("Turn", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(view, new object[] { 1 });
+await Wait.Until(() => ribbon.Brain.State == RobotState.Telegraph && ribbon.Brain.StateTimer < 0.3f);
+return "facing ribbon telegraph";

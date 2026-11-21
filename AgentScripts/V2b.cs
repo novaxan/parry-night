@@ -1,0 +1,12 @@
+using NightShift;
+using UnityEngine;
+using System.Linq;
+var nm = NightManager.Instance;
+nm.BeginNight();
+foreach (var r in nm.Robots) r.Brain.Place(0);
+var tusk = nm.Robots.First(r => r.Data.displayName == "Tusk");
+var ribbon = nm.Robots.First(r => r.Data.displayName == "Ribbon");
+tusk.Brain.Place(tusk.Brain.OpeningIndex);
+ribbon.Brain.Place(ribbon.Brain.OpeningIndex);
+await Wait.Until(() => ribbon.Brain.State == RobotState.Telegraph);
+return "ribbon telegraphing";

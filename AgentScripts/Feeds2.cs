@@ -1,0 +1,30 @@
+using NightShift;
+using UnityEngine;
+using System.Linq;
+var nm = NightManager.Instance;
+var tab = CameraTablet.Instance;
+nm.BeginNight();
+var ribbon = nm.Robots.First(r => r.Data.displayName == "Ribbon");
+var tusk = nm.Robots.First(r => r.Data.displayName == "Tusk");
+ribbon.Brain.Place(2);
+tusk.Brain.Place(1);
+tab.SetUp(true);
+async System.Threading.Tasks.Task Shot(int cam, string file) {
+  tab.Select(cam);
+  float u = Time.unscaledTime + 1.3f;
+  await Wait.Until(() => Time.unscaledTime > u);
+  ScreenCapture.CaptureScreenshot(file);
+  u = Time.unscaledTime + 0.3f;
+  await Wait.Until(() => Time.unscaledTime > u);
+}
+await Shot(0, "Screenshots/06_cam_stage.png");
+await Shot(1, "Screenshots/07_cam_dining.png");
+await Shot(4, "Screenshots/08_cam_easthall.png");
+tab.SetUp(false);
+ribbon.Brain.Place(ribbon.Brain.OpeningIndex);
+await Wait.Until(() => nm.State == GameState.Jumpscare);
+float w = Time.unscaledTime + 0.35f;
+await Wait.Until(() => Time.unscaledTime > w);
+ScreenCapture.CaptureScreenshot("Screenshots/09_jumpscare.png");
+await Wait.Until(() => nm.State == GameState.Lost);
+return $"state={nm.State} {nm.EndReason}";

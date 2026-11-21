@@ -1,0 +1,12 @@
+{
+    "name": "NightShift.Editor",
+    "rootNamespace": "NightShift.Editor",
+    "references": [
+        "NightShift",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime"
+    ],
+    "includePlatforms": [ "Editor" ],
+    "excludePlatforms": [],
+    "autoReferenced": true
+}
